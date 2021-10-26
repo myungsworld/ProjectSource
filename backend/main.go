@@ -2,6 +2,7 @@ package main
 
 import (
 	"ProjectSource/backend/config"
+	docs "ProjectSource/backend/docs"
 	"fmt"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -19,7 +20,7 @@ var (
 	osSignal chan os.Signal
 )
 
-const PORT = 5000
+const PORT = 5011
 
 func main() {
 
@@ -59,8 +60,14 @@ func main() {
 		c.Status(http.StatusOK)
 	})
 
+	// 스웨거 BasePath 설정
+	docs.SwaggerInfo.BasePath = ""
+
 	rApi := r.Group("/api")
-	rApi.Use()
+	//rApi.Use(middlewares.WrapMiddleware)
+
+	rTrade := rApi.Group("/trade")
+	SetWebTrade(rTrade)
 
 	servingFE(r)
 
@@ -79,6 +86,6 @@ func main() {
 
 func servingFE(r *gin.Engine) {
 	r.NoRoute(func(c *gin.Context) {
-		c.File("../frontend/index.html")
+		c.File("../frontend/src/app/app.component.index.html")
 	})
 }
